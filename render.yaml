@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: loopio-bulk-create
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: LOOPIO_CLIENT_ID
+        sync: false
+      - key: LOOPIO_CLIENT_SECRET
+        sync: false
+      - key: LOOPIO_BASE_URL
+        value: https://api.loopio.com

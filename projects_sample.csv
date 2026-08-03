@@ -1,0 +1,6 @@
+name,projectType,description,companyName,dueDate,createdType,owner_id,cf_Region,cf_Priority
+Q3 Vendor RFP - Cloud Hosting,RFP,Response to cloud infrastructure hosting RFP,Nimbus Cloud Solutions,2026-09-15T17:00:00Z,BLANK,,EMEA,High
+Annual Compliance DDQ,DDQ,Due diligence questionnaire for annual compliance review,Sterling Risk Partners,2026-09-22T17:00:00Z,BLANK,,NA,Medium
+Payment Gateway RFI,RFI,Initial information request for payment processing partner,Zenith Payments Inc,2026-09-30T17:00:00Z,BLANK,,APAC,High
+Logistics Partner Security Questionnaire,SQ,Security questionnaire for third-party logistics vendor,Meridian Freight Co,2026-10-05T17:00:00Z,BLANK,,NA,Low
+Marketing Platform Proposal,PP,Proposal for new marketing automation platform,Bright Signal Media,2026-10-10T17:00:00Z,BLANK,,EMEA,Medium
