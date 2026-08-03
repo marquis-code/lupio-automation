@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Loopio Bulk Create API",
-    "description": "API for bulk-creating Loopio projects via a JSON array payload.",
+    "description": "# Loopio Bulk Create API\n\nThis API allows you to bulk-create projects in Loopio by passing an array of project objects. \n\n## Required Headers\nYou must provide the following headers for the API to authenticate with Loopio on your behalf:\n- `X-Loopio-Client-Id`: Your Loopio API Client ID.\n- `X-Loopio-Client-Secret`: Your Loopio API Client Secret.\n- `X-Loopio-Base-Url`: The base URL of your Loopio Datacenter (e.g. `https://api.loopio.com`).\n\n## Payload Structure\nThe request body must be a JSON array `[]` containing one or more project objects. \n\n**Required fields per project:**\n- `name` (string, max 255 chars)\n- `projectType` (string: RFP, RFI, DDQ, SQ, PP, OTHER)\n- `companyName` (string, max 255 chars)\n- `dueDate` (ISO-8601 string, e.g. `2020-06-08T15:39:04Z`)\n\n**Optional fields:**\n- `description` (string)\n- `createdType` (string, defaults to BLANK)\n- `owner` (object with `id` integer)\n- `customProjectFieldValues` (dictionary mapping custom fields)\n- `mergeVariableValues` (dictionary)\n\nCheck the example payloads in this collection for a complete reference!",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -13,17 +13,20 @@
           {
             "key": "X-Loopio-Client-Id",
             "value": "{{loopio_client_id}}",
-            "type": "text"
+            "type": "text",
+            "description": "Your Loopio Client ID"
           },
           {
             "key": "X-Loopio-Client-Secret",
             "value": "{{loopio_client_secret}}",
-            "type": "text"
+            "type": "text",
+            "description": "Your Loopio Client Secret"
           },
           {
             "key": "X-Loopio-Base-Url",
             "value": "https://api.loopio.com",
-            "type": "text"
+            "type": "text",
+            "description": "Base URL of your Loopio Datacenter"
           },
           {
             "key": "Content-Type",
@@ -33,7 +36,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"companyName\": \"Acme Co\",\n    \"dueDate\": \"2026-09-08T15:39:04Z\",\n    \"description\": \"Some description\"\n  },\n  {\n    \"name\": \"Project XYZ\",\n    \"projectType\": \"RFI\",\n    \"companyName\": \"Beta Inc\",\n    \"dueDate\": \"2026-10-01T12:00:00Z\"\n  }\n]"
+          "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"description\": \"string\",\n    \"companyName\": \"string\",\n    \"dueDate\": \"2020-06-08T15:39:04Z\",\n    \"createdType\": \"BLANK\",\n    \"owner\": {\n      \"id\": 0\n    },\n    \"customProjectFieldValues\": {\n      \"property1\": \"string\",\n      \"property2\": \"string\"\n    },\n    \"mergeVariableValues\": {}\n  }\n]"
         },
         "url": {
           "raw": "{{api_base_url}}/api/v1/projects/bulk-create",
@@ -56,7 +59,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"companyName\": \"Acme Co\",\n    \"dueDate\": \"2026-09-08T15:39:04Z\"\n  }\n]"
+              "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"description\": \"string\",\n    \"companyName\": \"string\",\n    \"dueDate\": \"2020-06-08T15:39:04Z\",\n    \"createdType\": \"BLANK\",\n    \"owner\": {\n      \"id\": 0\n    },\n    \"customProjectFieldValues\": {\n      \"property1\": \"string\",\n      \"property2\": \"string\"\n    },\n    \"mergeVariableValues\": {}\n  }\n]"
             },
             "url": {
               "raw": "{{api_base_url}}/api/v1/projects/bulk-create",
@@ -124,7 +127,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"companyName\": \"Acme Co\",\n    \"dueDate\": \"2026-09-08T15:39:04Z\"\n  }\n]"
+              "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"description\": \"string\",\n    \"companyName\": \"string\",\n    \"dueDate\": \"2020-06-08T15:39:04Z\",\n    \"createdType\": \"BLANK\"\n  }\n]"
             },
             "url": {
               "raw": "{{api_base_url}}/api/v1/projects/bulk-create",
