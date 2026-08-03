@@ -70,31 +70,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-CLIENT_ID = os.getenv("LOOPIO_CLIENT_ID")
-CLIENT_SECRET = os.getenv("LOOPIO_CLIENT_SECRET")
-BASE_URL = os.getenv("LOOPIO_BASE_URL", "https://api.loopio.com").rstrip("/")
-
-TOKEN_URL = f"{BASE_URL}/oauth2/access_token"
-PROJECTS_URL = f"{BASE_URL}/data/v2/projects"
-
 DELAY_BETWEEN_CALLS_SECONDS = 0.5  # be polite to the API; tune as needed
 MAX_RETRIES = 5
 
 
-def get_access_token():
+def get_access_token(client_id, client_secret, base_url="https://api.loopio.com"):
     """Client Credentials OAuth flow -> bearer token with project:write scope."""
-    if not CLIENT_ID or not CLIENT_SECRET:
+    if not client_id or not client_secret:
         raise ValueError(
             "Missing LOOPIO_CLIENT_ID / LOOPIO_CLIENT_SECRET. "
             "Set them in a .env file or as environment variables."
         )
+        
+    token_url = f"{base_url.rstrip('/')}/oauth2/access_token"
 
     resp = requests.post(
-        TOKEN_URL,
+        token_url,
         data={
             "grant_type": "client_credentials",
-            "client_id": CLIENT_ID,
-            "client_secret": CLIENT_SECRET,
+            "client_id": client_id,
+            "client_secret": client_secret,
             "scope": "project:write",
         },
         timeout=30,
@@ -132,17 +127,19 @@ def row_to_payload(row):
     return payload
 
 
-def create_project(session, token, payload):
+def create_project(session, token, payload, base_url="https://api.loopio.com"):
     """POST a single project, with retry/backoff. Returns (ok, response_json_or_error)."""
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
+    
+    projects_url = f"{base_url.rstrip('/')}/data/v2/projects"
 
     backoff = 2
     for attempt in range(1, MAX_RETRIES + 1):
-        resp = session.post(PROJECTS_URL, json=payload, headers=headers, timeout=30)
+        resp = session.post(projects_url, json=payload, headers=headers, timeout=30)
 
         if resp.status_code in (200, 201):
             return True, resp.json()

@@ -10,12 +10,23 @@ def test_bulk_create_success(mock_create_project, mock_get_access_token):
     mock_get_access_token.return_value = "fake_token"
     mock_create_project.return_value = (True, {"id": 123})
     
-    csv_content = """name,projectType,companyName,dueDate,description
-Test Project,RFP,Test Co,2026-09-08T15:39:04Z,Test Desc"""
+    json_payload = [
+        {
+            "name": "Test Project",
+            "projectType": "RFP",
+            "companyName": "Test Co",
+            "dueDate": "2026-09-08T15:39:04Z",
+            "description": "Test Desc"
+        }
+    ]
     
     response = client.post(
         "/api/v1/projects/bulk-create",
-        files={"file": ("test.csv", csv_content, "text/csv")}
+        json=json_payload,
+        headers={
+            "X-Loopio-Client-Id": "test_id",
+            "X-Loopio-Client-Secret": "test_secret"
+        }
     )
     
     assert response.status_code == 200
@@ -24,10 +35,21 @@ Test Project,RFP,Test Co,2026-09-08T15:39:04Z,Test Desc"""
     assert data["summary"]["succeeded"] == 1
     assert data["results"][0]["project_id"] == 123
 
-def test_bulk_create_invalid_file_extension():
+def test_bulk_create_missing_fields():
+    json_payload = [
+        {
+            "name": "Test Project",
+            "projectType": "RFP"
+            # Missing companyName and dueDate
+        }
+    ]
     response = client.post(
         "/api/v1/projects/bulk-create",
-        files={"file": ("test.txt", "some content", "text/plain")}
+        json=json_payload,
+        headers={
+            "X-Loopio-Client-Id": "test_id",
+            "X-Loopio-Client-Secret": "test_secret"
+        }
     )
     assert response.status_code == 400
-    assert response.json()["detail"] == "Only CSV files are allowed."
+    assert "missing required field(s)" in response.json()["detail"]

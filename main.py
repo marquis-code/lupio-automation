@@ -1,36 +1,29 @@
-import csv
-import io
 import time
 import requests
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from typing import List, Dict, Any
+from fastapi import FastAPI, HTTPException, Body, Header
 from loopio_bulk_create_projects import get_access_token, row_to_payload, create_project, DELAY_BETWEEN_CALLS_SECONDS
 
 app = FastAPI(title="Loopio Bulk Create Projects API")
 
 @app.post("/api/v1/projects/bulk-create")
-async def bulk_create_projects(file: UploadFile = File(...)):
-    if not file.filename.endswith(".csv"):
-        raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
-    
-    contents = await file.read()
-    try:
-        text = contents.decode("utf-8-sig")
-    except UnicodeDecodeError:
-        text = contents.decode("utf-8")
-        
-    reader = csv.DictReader(io.StringIO(text))
-    rows = list(reader)
-    
+async def bulk_create_projects(
+    rows: List[Dict[str, Any]] = Body(...),
+    loopio_client_id: str = Header(..., alias="X-Loopio-Client-Id"),
+    loopio_client_secret: str = Header(..., alias="X-Loopio-Client-Secret"),
+    loopio_base_url: str = Header("https://api.loopio.com", alias="X-Loopio-Base-Url")
+):
     if not rows:
-        raise HTTPException(status_code=400, detail="Input CSV has no rows.")
+        raise HTTPException(status_code=400, detail="Input JSON has no projects.")
         
     required_cols = {"name", "projectType", "companyName", "dueDate"}
-    missing = required_cols - set(rows[0].keys())
-    if missing:
-        raise HTTPException(status_code=400, detail=f"CSV is missing required column(s): {', '.join(sorted(missing))}")
+    for idx, row in enumerate(rows):
+        missing = required_cols - set(row.keys())
+        if missing:
+            raise HTTPException(status_code=400, detail=f"Project at index {idx} is missing required field(s): {', '.join(sorted(missing))}")
         
     try:
-        token = get_access_token()
+        token = get_access_token(loopio_client_id, loopio_client_secret, loopio_base_url)
     except ValueError as e:
         raise HTTPException(status_code=500, detail=str(e))
         
@@ -46,12 +39,12 @@ async def bulk_create_projects(file: UploadFile = File(...)):
             results.append({"row": i, "name": name, "status": "invalid_row", "detail": str(e)})
             continue
             
-        ok, response = create_project(session, token, payload)
+        ok, response = create_project(session, token, payload, loopio_base_url)
         
         if not ok and response.get("refresh_token"):
             try:
-                token = get_access_token()
-                ok, response = create_project(session, token, payload)
+                token = get_access_token(loopio_client_id, loopio_client_secret, loopio_base_url)
+                ok, response = create_project(session, token, payload, loopio_base_url)
             except Exception as e:
                 results.append({"row": i, "name": name, "status": "failed", "detail": f"Token refresh failed: {str(e)}"})
                 continue
