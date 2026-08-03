@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Loopio Bulk Create API",
-    "description": "# Loopio Bulk Create API\n\nThis API allows you to bulk-create projects in Loopio by passing an array of project objects. \n\n## Required Headers\nYou must provide the following headers for the API to authenticate with Loopio on your behalf:\n- `X-Loopio-Client-Id`: Your Loopio API Client ID.\n- `X-Loopio-Client-Secret`: Your Loopio API Client Secret.\n- `X-Loopio-Base-Url`: The base URL of your Loopio Datacenter (e.g. `https://api.loopio.com`).\n\n## Payload Structure\nThe request body must be a JSON array `[]` containing one or more project objects. \n\n**Required fields per project:**\n- `name` (string, max 255 chars)\n- `projectType` (string: RFP, RFI, DDQ, SQ, PP, OTHER)\n- `companyName` (string, max 255 chars)\n- `dueDate` (ISO-8601 string, e.g. `2020-06-08T15:39:04Z`)\n\n**Optional fields:**\n- `description` (string)\n- `createdType` (string, defaults to BLANK)\n- `owner` (object with `id` integer)\n- `customProjectFieldValues` (dictionary mapping custom fields)\n- `mergeVariableValues` (dictionary)\n\nCheck the example payloads in this collection for a complete reference!",
+    "description": "# Loopio Bulk Create API\n\nThis API allows you to bulk-create projects in Loopio by passing an array of project objects. \n\n## Required Headers\nYou must provide the following headers for the API to authenticate with Loopio on your behalf:\n- `X-Loopio-Client-Id`: Your Loopio API Client ID.\n- `X-Loopio-Client-Secret`: Your Loopio API Client Secret.\n- `X-Loopio-Base-Url`: The base URL of your Loopio Datacenter (e.g. `https://api.loopio.com`).\n\n**Note on Authentication:** Our API takes your Loopio Client ID and Secret in the headers, and **automatically handles the OAuth2 Bearer token generation for you**. You do not need to generate a Bearer token manually in Postman!\n\n## Payload Structure\nThe request body must be a JSON array `[]` containing one or more project objects. \n\n**Required fields per project:**\n- `name` (string, max 255 chars)\n- `projectType` (string: RFP, RFI, DDQ, SQ, PP, OTHER)\n- `companyName` (string, max 255 chars)\n- `dueDate` (ISO-8601 string, e.g. `2020-06-08T15:39:04Z`)\n\n**Optional fields:**\n- `description` (string)\n- `createdType` (string, defaults to BLANK)\n- `owner` (object with `id` integer)\n- `customProjectFieldValues` (dictionary mapping custom fields)\n- `mergeVariableValues` (dictionary)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -56,7 +56,28 @@
           "name": "200 OK (Success)",
           "originalRequest": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "X-Loopio-Client-Id",
+                "value": "{{loopio_client_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Client-Secret",
+                "value": "{{loopio_client_secret}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Base-Url",
+                "value": "https://api.loopio.com",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"description\": \"string\",\n    \"companyName\": \"string\",\n    \"dueDate\": \"2020-06-08T15:39:04Z\",\n    \"createdType\": \"BLANK\",\n    \"owner\": {\n      \"id\": 0\n    },\n    \"customProjectFieldValues\": {\n      \"property1\": \"string\",\n      \"property2\": \"string\"\n    },\n    \"mergeVariableValues\": {}\n  }\n]"
@@ -90,7 +111,28 @@
           "name": "400 Bad Request (Missing Fields)",
           "originalRequest": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "X-Loopio-Client-Id",
+                "value": "{{loopio_client_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Client-Secret",
+                "value": "{{loopio_client_secret}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Base-Url",
+                "value": "https://api.loopio.com",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\"\n  }\n]"
@@ -124,7 +166,28 @@
           "name": "500 Internal Server Error (Auth Failed)",
           "originalRequest": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "X-Loopio-Client-Id",
+                "value": "{{loopio_client_id}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Client-Secret",
+                "value": "{{loopio_client_secret}}",
+                "type": "text"
+              },
+              {
+                "key": "X-Loopio-Base-Url",
+                "value": "https://api.loopio.com",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "[\n  {\n    \"name\": \"Project ABC\",\n    \"projectType\": \"RFP\",\n    \"description\": \"string\",\n    \"companyName\": \"string\",\n    \"dueDate\": \"2020-06-08T15:39:04Z\",\n    \"createdType\": \"BLANK\"\n  }\n]"
