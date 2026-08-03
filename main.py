@@ -2,7 +2,7 @@ import time
 import requests
 from typing import List, Dict, Any
 from fastapi import FastAPI, HTTPException, Body, Header
-from loopio_bulk_create_projects import get_access_token, row_to_payload, create_project, DELAY_BETWEEN_CALLS_SECONDS
+from loopio_bulk_create_projects import get_access_token, create_project, DELAY_BETWEEN_CALLS_SECONDS
 
 app = FastAPI(title="Loopio Bulk Create Projects API")
 
@@ -33,11 +33,7 @@ async def bulk_create_projects(
     for i, row in enumerate(rows, 1):
         name = row.get("name", "<unnamed>")
         
-        try:
-            payload = row_to_payload(row)
-        except Exception as e:
-            results.append({"row": i, "name": name, "status": "invalid_row", "detail": str(e)})
-            continue
+        payload = row
             
         ok, response = create_project(session, token, payload, loopio_base_url)
         

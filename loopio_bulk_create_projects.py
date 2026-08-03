@@ -98,35 +98,6 @@ def get_access_token(client_id, client_secret, base_url="https://api.loopio.com"
     return resp.json()["access_token"]
 
 
-def row_to_payload(row):
-    """Convert one CSV row (dict) into the JSON body /data/v2/projects expects."""
-    payload = {
-        "name": row["name"].strip(),
-        "projectType": row["projectType"].strip(),
-        "companyName": row["companyName"].strip(),
-        "dueDate": row["dueDate"].strip(),
-        "createdType": (row.get("createdType") or "BLANK").strip(),
-    }
-
-    description = (row.get("description") or "").strip()
-    if description:
-        payload["description"] = description
-
-    owner_id = (row.get("owner_id") or "").strip()
-    if owner_id:
-        payload["owner"] = {"id": int(owner_id)}
-
-    custom_fields = {
-        key[3:]: value
-        for key, value in row.items()
-        if key.startswith("cf_") and value not in (None, "")
-    }
-    if custom_fields:
-        payload["customProjectFieldValues"] = custom_fields
-
-    return payload
-
-
 def create_project(session, token, payload, base_url="https://api.loopio.com"):
     """POST a single project, with retry/backoff. Returns (ok, response_json_or_error)."""
     headers = {
